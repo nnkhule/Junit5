@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class GradeCalculatorTest {
     // letterGrade - Ердийн утгууд
@@ -173,5 +175,60 @@ class GradeCalculatorTest {
                         30.0
                 )
         );
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "95, A",
+            "90, A",
+            "89.99, B",
+            "80, B",
+            "70, C",
+            "60, D",
+            "59.99, F",
+            "0, F",
+            "100, A"
+    })
+    @DisplayName("Онооны хязгаараас хамаарч зөв үсгэн дүн буцаах")
+    void letterGradeBoundaries(double score, String expected) {
+
+        // Arrange
+        GradeCalculator calc = new GradeCalculator();
+
+        // Act
+        String actual = calc.letterGrade(score);
+
+        // Assert
+        assertEquals(expected, actual);
+    }
+
+
+    @ParameterizedTest
+    @CsvSource({
+            "10, 40, 10, 10, 30, 100",
+            "9, 35, 8, 9, 27, 88",
+            "10, 30, 10, 10, 25, 85",
+            "8, 32, 7, 8, 25, 80",
+            "5, 20, 5, 5, 15, 50"
+    })
+    @DisplayName("Оноонуудын нийлбэрийг зөв тооцох")
+    void totalScoreCalculation(
+            double att,
+            double lab,
+            double quiz1,
+            double quiz2,
+            double exam,
+            double expected) {
+
+        // Arrange
+        GradeCalculator calc = new GradeCalculator();
+
+        // Act
+        double actual = calc.totalScore(
+                att, lab, quiz1, quiz2, exam
+        );
+
+        // Assert
+        assertEquals(expected, actual);
     }
 }
